@@ -1,6 +1,6 @@
 # Lloseng
 
-This repository contains a copy of [the cody required to complete the first assignment](https://github.com/TimLethbridge/Lloseng)
+This repository contains a copy of [the code required to complete the first assignment](https://github.com/TimLethbridge/Lloseng)
 using the book [Object-Oriented Software Engineering: Practical Software
 Development using UML and Java](http://www.site.uottawa.ca/school/research/lloseng/), 2nd Edition, 2004 McGraw Hill.
 by [Timothy C. Lethbridge](http://www.eecs.uottawa.ca/~tcl) and
