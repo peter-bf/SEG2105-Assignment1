@@ -1,3 +1,5 @@
+package design5;
+
 // This file contains material supporting section 2.9 of the textbook:
 // "Object Oriented Software Engineering" and is issued under the open-source
 // license found at http://www.site.uottawa.ca/school/research/lloseng/
@@ -33,18 +35,25 @@ public class PointCPTest
    */
   public static void main(String[] args)
   {
-    PointCP point;
+    PointCP5 point;
+
+    System.out.println("Testing PointCP2 (Polar Coordinates):");
+        testPointCP2();
+
+        System.out.println("\nTesting PointCP3 (Cartesian Coordinates):");
+        testPointCP3();
 
     System.out.println("Cartesian-Polar Coordinates Conversion Program");
 
     // Check if the user input coordinates from the command line
     // If he did, create the PointCP object from these arguments.
     // If he did not, prompt the user for them.
-    try
+     try
     {
-      point = new PointCP(args[0].toUpperCase().charAt(0), 
-        Double.valueOf(args[1]).doubleValue(), 
-        Double.valueOf(args[2]).doubleValue());
+      if (args[0].charAt(0) == 'C')
+        point = new PointCP3(Double.valueOf(args[1]).doubleValue(), Double.valueOf(args[2]).doubleValue());
+      else
+        point = new PointCP2(Double.valueOf(args[1]).doubleValue(), Double.valueOf(args[2]).doubleValue());
     }
     catch(Exception e)
     {
@@ -70,6 +79,44 @@ public class PointCPTest
     System.out.println("\nAfter asking to store as Polar:\n" + point);
   }
 
+  //This method is to test PointCP2 with specific polar coordinates 
+  private static void testPointCP2() {
+    PointCP5 point = new PointCP2(5.0, 45.0); // Example values for rho and theta
+    System.out.println("Original Point: " + point);
+
+    System.out.println("Converted to Cartesian: " + point);
+    point.convertStorageToCartesian();
+
+    System.out.println("Converted back to Polar: " + point);
+    point.convertStorageToPolar();
+
+
+    PointCP5 point2 = new PointCP2(2.0, 30.0);
+    System.out.println("\nAdditional Test - Point2: " + point2);
+
+    // Test rotating a point
+    PointCP2 rotatedPoint = ((PointCP2) point2).rotatePoint(60.0);
+    System.out.println("Rotated Point2: " + rotatedPoint);
+}
+
+//This method is to test PointCP3 with specific cartesian coordinates
+private static void testPointCP3() {
+  PointCP5 point = new PointCP3(3.0, 4.0);
+  System.out.println("Original Point: " + point);
+
+  System.out.println("Converted to Polar:");
+  point.convertStorageToPolar();
+
+  System.out.println("Converted back to Cartesian: " + point);
+  point.convertStorageToCartesian();
+
+  PointCP5 point2 = new PointCP3(1.0, 1.0);
+  System.out.println("\nAdditional Test - Point2: " + point2);
+
+  PointCP3 rotatedPoint = ((PointCP3) point2).rotatePoint(45.0);
+  System.out.println("Rotated Point2: " + rotatedPoint);
+}
+
   /**
    * This method obtains input from the user and verifies that
    * it is valid.  When the input is valid, it returns a PointCP
@@ -80,23 +127,26 @@ public class PointCPTest
    * @throws IOException If there is an error getting input from
    *         the user.
    */
-  private static PointCP getInput() throws IOException
+  private static PointCP5 getInput() throws IOException
   {
-    byte[] buffer = new byte[1024];
-    boolean isOK = false;
-    String theInput = "";
+    byte[] buffer = new byte[1024];  //Buffer to hold byte input
+    boolean isOK = false;  // Flag set if input correct
+    String theInput = "";  // Input information
     
-    char coordType = 'A';
+    //Information to be passed to the constructor
+    char coordType = 'A'; // Temporary default, to be set to P or C
     double a = 0.0;
     double b = 0.0;
 
+    // Allow the user to enter the three different arguments
     for (int i = 0; i < 3; i++)
     {
       while (!(isOK))
       {
-        isOK = true;
+        isOK = true;  //flag set to true assuming input will be valid
           
-        if (i == 0)
+        // Prompt the user
+        if (i == 0) // First argument - type of coordinates
         {
           System.out.print("Enter the type of Coordinates you "
             + "are inputting ((C)artesian / (P)olar): ");
@@ -110,20 +160,24 @@ public class PointCPTest
             + "using a decimal point(.): ");
         }
 
+        // Get the user's input      
        
+        // Initialize the buffer before we read the input
         for(int k=0; k<1024; k++)
         	buffer[k] = '\u0020';        
              
         System.in.read(buffer);
         theInput = new String(buffer).trim();
         
+        // Verify the user's input
         try
         {
-          if (i == 0)
+          if (i == 0) // First argument -- type of coordinates
           {
             if (!((theInput.toUpperCase().charAt(0) == 'C') 
               || (theInput.toUpperCase().charAt(0) == 'P')))
             {
+              //Invalid input, reset flag so user is prompted again
               isOK = false;
             }
             else
@@ -131,8 +185,9 @@ public class PointCPTest
               coordType = theInput.toUpperCase().charAt(0);
             }
           }
-          else
+          else  // Second and third arguments
           {
+            //Convert the input to double values
             if (i == 1)
               a = Double.valueOf(theInput).doubleValue();
             else
@@ -142,12 +197,17 @@ public class PointCPTest
         catch(Exception e)
         {
         	System.out.println("Incorrect input");
-        	isOK = false;
+        	isOK = false;  //Reset flag as so not to end while loop
         }
       }
 
       isOK = false;
     }
-    return (new PointCP(coordType, a, b));
+    if (coordType == 'P'){
+      return (new PointCP2(a, b));
+    }
+    else {
+      return (new PointCP3(a, b));
+    }
   }
 }
